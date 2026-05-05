@@ -1,0 +1,15 @@
+script TestNPC {
+    lock
+    faceplayer
+
+    msgbox("Do you want to join Neo Rocket?", MSGBOX_YESNO)
+
+    if (var(VAR_RESULT) == YES) {
+        msgbox("We're gonna change the world kid!")
+    } else {
+        msgbox("Really? That's a bummer...")
+    }
+
+    release
+    end
+}

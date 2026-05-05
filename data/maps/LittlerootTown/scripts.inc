@@ -1014,3 +1014,8 @@ LittlerootTown_Text_BirchSomethingToShowYouAtLab:
 	.string "I have something to show you.\n"
 	.string "Let's go to my LAB.$"
 
+@ .include "data/maps/LittlerootTown/custom_scripts.inc"
+
+.include "data/maps/LittlerootTown/test_npc.inc"
+
+

@@ -147,6 +147,7 @@ RAMSCRGEN := $(TOOLS_DIR)/ramscrgen/ramscrgen$(EXE)
 FIX       := $(TOOLS_DIR)/gbafix/gbafix$(EXE)
 MAPJSON   := $(TOOLS_DIR)/mapjson/mapjson$(EXE)
 JSONPROC  := $(TOOLS_DIR)/jsonproc/jsonproc$(EXE)
+SCRIPT    := $(TOOLS_DIR)/poryscript/poryscript$(EXE)
 
 PERL := perl
 SHA1 := $(shell { command -v sha1sum || command -v shasum; } 2>/dev/null) -c
@@ -267,12 +268,18 @@ include audio_rules.mk
 # so you can't really call this rule directly
 generated: $(AUTO_GEN_TARGETS)
 	@: # Silence the "Nothing to be done for `generated'" message, which some people were confusing for an error.
+PORYSCRIPT_TARGETS := $(patsubst %.pory,%.inc,$(shell find data/ -type f -name '*.pory'))
 
 
 %.s:   ;
 %.png: ;
 %.pal: ;
 %.wav: ;
+%.pory: ;
+
+data/%.inc: data/%.pory
+	$(SCRIPT) -i $< -o $@ -fc tools/poryscript/font_config.json -cc tools/poryscript/command_config.json
+
 
 %.1bpp:   %.png  ; $(GFX) $< $@
 %.4bpp:   %.png  ; $(GFX) $< $@
@@ -387,7 +394,7 @@ $(ELF): $(LD_SCRIPT) $(LD_SCRIPT_DEPS) $(OBJS) libagbsyscall
 	$(FIX) $@ -t"$(TITLE)" -c$(GAME_CODE) -m$(MAKER_CODE) -r$(REVISION) --silent
 
 # Builds the rom from the elf file
-$(ROM): $(ELF)
+$(ROM): $(ELF) $(PORYSCRIPT_TARGETS)
 	$(OBJCOPY) -O binary $< $@
 	$(FIX) $@ -p --silent
 
